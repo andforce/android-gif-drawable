@@ -1,5 +1,7 @@
 package pl.droidsonroids.gif;
 
+import android.support.annotation.NonNull;
+
 import java.io.IOException;
 
 /**
@@ -8,20 +10,27 @@ import java.io.IOException;
  * @author koral--
  */
 public class GifIOException extends IOException {
-    private static final long serialVersionUID = 13038402904505L;
-    /**
-     * Reason which caused an exception
-     */
-    public final GifError reason;
+	private static final long serialVersionUID = 13038402904505L;
+	/**
+	 * Reason which caused an exception
+	 */
+	@NonNull
+	public final GifError reason;
 
-    private GifIOException(GifError reason) {
-        super(reason.getFormattedDescription());
-        this.reason = reason;
-    }
+	private GifIOException(@NonNull GifError reason) {
+		super(reason.getFormattedDescription());
+		this.reason = reason;
+	}
 
-    @SuppressWarnings("UnusedDeclaration")
-        //invoked from native code
-    GifIOException(int errorCode) {
-        this(GifError.fromCode(errorCode));
-    }
+	@SuppressWarnings("WeakerAccess")
+		//invoked from native code
+	GifIOException(int errorCode) {
+		this(GifError.fromCode(errorCode));
+	}
+
+	static GifIOException fromCode(final int nativeErrorCode) {
+		if (nativeErrorCode == GifError.NO_ERROR.errorCode)
+			return null;
+		return new GifIOException(nativeErrorCode);
+	}
 }
